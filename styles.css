@@ -1,0 +1,430 @@
+/* ========== لوحة ألوان موحدة ومتغيرات CSS ========== */
+:root {
+  --main-color: #1976d2;
+  --accent-color: #43a047;
+  --danger-color: #e53935;
+  --bg-light: #f5f7fa;
+  --bg-dark: #232526;
+  --text-main: #222;
+  --text-light: #f5f7fa;
+  --header-bg: linear-gradient(90deg, #1976d2 60%, #43a047 100%);
+  --header-bg-dark: linear-gradient(90deg, #232526 60%, #1976d2 100%);
+  --btn-radius: 12px;
+  --btn-padding: 10px 22px;
+  --btn-font: 1.05em;
+  --font-main: 'Tajawal', 'Inter', Arial, sans-serif;
+}
+
+body {
+  font-family: var(--font-main);
+  background: var(--bg-light);
+  color: var(--text-main);
+  min-height: 100vh;
+  font-size: 17px;
+  transition: background 0.3s, color 0.3s;
+}
+
+body.dark {
+  background: var(--bg-dark);
+  color: var(--text-light);
+}
+
+header#main-header {
+  background: var(--header-bg);
+  box-shadow: 0 2px 12px #0002;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+  margin-bottom: 18px;
+}
+body.dark header#main-header {
+  background: var(--header-bg-dark);
+}
+
+button, .user-auth button, .header-actions button, .export-import-bar button, .calendar-toggle-bar button, .category-filters button, .filters button, .tags-filter-bar button, .color-filter-bar button, .priority-filter-bar button {
+  border-radius: var(--btn-radius);
+  padding: var(--btn-padding);
+  font-size: var(--btn-font);
+  background: var(--header-bg);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 2px 8px #1976d222;
+  transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+  font-family: inherit;
+}
+button:hover, .user-auth button:hover, .header-actions button:hover, .export-import-bar button:hover, .calendar-toggle-bar button:hover, .category-filters button:hover, .filters button:hover, .tags-filter-bar button:hover, .color-filter-bar button:hover, .priority-filter-bar button:hover {
+  background: linear-gradient(90deg, var(--accent-color) 60%, var(--main-color) 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px #1976d244;
+}
+
+/* فقط الأزرار في الهيدر أو شريط الأدوات تكون flex */
+.header-actions button, .user-auth button, .export-import-bar button, .calendar-toggle-bar button, .category-filters button, .filters button, .tags-filter-bar button, .color-filter-bar button, .priority-filter-bar button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fab-add-task {
+  background: var(--header-bg);
+  color: #fff;
+  font-size: 2.2em;
+  border-radius: 50%;
+  box-shadow: 0 6px 24px #1976d244;
+  right: 24px;
+  bottom: 24px;
+}
+.fab-add-task:hover {
+  background: linear-gradient(90deg, var(--accent-color) 60%, var(--main-color) 100%);
+}
+@media (max-width: 600px) {
+  .fab-add-task {
+    right: 10px;
+    bottom: 10px;
+  }
+}
+
+/* ========== تحسين الخطوط ========== */
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Inter:wght@400;700&display=swap');
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-main);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1em;
+  border-radius: 10px;
+  border: 1.5px solid #c3cfe2;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--main-color);
+  box-shadow: 0 2px 8px #1976d233;
+}
+
+.material-icons {
+  font-size: 1.2em;
+  vertical-align: middle;
+}
+
+/* ========== تباين النصوص في الوضع الليلي ========== */
+body.dark .task-item, body.dark .task-card, body.dark .modal-content {
+  background: #232b36;
+  color: var(--text-light);
+}
+body.dark input, body.dark select, body.dark textarea {
+  background: #232b36;
+  color: var(--text-light);
+  border-color: #444;
+}
+
+/* ========== تحسين ألوان الفلاتر والوسوم ========== */
+.category-label {
+  background: #f1f8e9;
+  color: #388e3c;
+  border-radius: 8px;
+  padding: 2px 10px;
+  font-size: 0.98em;
+  margin-left: 6px;
+  margin-right: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.tag-chip {
+  background: #e3f2fd;
+  color: var(--main-color);
+  border-radius: 8px;
+  padding: 2px 8px;
+  font-size: 0.97em;
+  margin: 0 2px;
+}
+
+/* نوافذ منبثقة عصرية */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0; top: 0; width: 100vw; height: 100vh;
+  background: rgba(30,40,60,0.18);
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.modal-content {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 6px 32px #1976d244;
+  padding: 32px 24px 24px 24px;
+  min-width: 280px;
+  max-width: 98vw;
+  position: relative;
+  animation: fadeIn 0.3s;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+.close-modal {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #f5f7fa;
+  color: #1976d2;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 1.3em;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #0001;
+  transition: background 0.2s;
+}
+.close-modal:hover {
+  background: #e3f2fd;
+}
+
+/* تحسين النماذج */
+input, select, textarea {
+  border-radius: 10px;
+  border: 1.5px solid #c3cfe2;
+  padding: 8px 12px;
+  font-size: 1em;
+  margin-bottom: 8px;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #1976d2;
+  box-shadow: 0 2px 8px #1976d233;
+}
+button {
+  border-radius: 12px;
+  padding: 10px 22px;
+  font-size: 1.05em;
+  background: linear-gradient(90deg, #1976d2 60%, #43a047 100%);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 2px 8px #1976d222;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+button:hover {
+  background: linear-gradient(90deg, #43a047 60%, #1976d2 100%);
+  box-shadow: 0 4px 16px #1976d244;
+}
+
+/* ========== تحسين القوائم والبطاقات ========== */
+.task-item, .task-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px #1976d222;
+  margin-bottom: 16px;
+  padding: 18px 18px 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: box-shadow 0.2s, transform 0.2s, background 0.2s;
+  position: relative;
+}
+.task-item:hover, .task-card:hover {
+  box-shadow: 0 8px 32px #1976d244;
+  transform: translateY(-2px) scale(1.015);
+  background: #f5f7fa;
+}
+body.dark .task-item, body.dark .task-card {
+  background: #232b36;
+  box-shadow: 0 2px 12px #0004;
+}
+body.dark .task-item:hover, body.dark .task-card:hover {
+  background: #2c3440;
+}
+
+.task-title {
+  font-size: 1.15em;
+  font-weight: 700;
+  flex: 1;
+  color: var(--main-color);
+  letter-spacing: 0.5px;
+}
+
+.task-actions {
+  display: flex;
+  gap: 7px;
+}
+.task-actions button {
+  padding: 7px 10px;
+  font-size: 1em;
+  border-radius: 8px;
+  background: #f5f7fa;
+  color: var(--main-color);
+  box-shadow: none;
+  border: 1px solid #e3eaf2;
+  transition: background 0.18s, color 0.18s;
+}
+.task-actions button:hover {
+  background: var(--main-color);
+  color: #fff;
+}
+body.dark .task-actions button {
+  background: #232b36;
+  color: var(--accent-color);
+  border: 1px solid #333a44;
+}
+body.dark .task-actions button:hover {
+  background: var(--accent-color);
+  color: #fff;
+}
+
+/* ========== تحسين بطاقات الإحصائيات ========== */
+.stats-cards {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.stat-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px #1976d222;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 120px;
+  flex: 1 1 120px;
+  transition: box-shadow 0.2s, background 0.2s;
+}
+.stat-card .material-icons {
+  font-size: 2em;
+  color: var(--main-color);
+}
+.stat-number {
+  font-size: 1.3em;
+  font-weight: bold;
+  color: var(--accent-color);
+}
+.stat-label {
+  font-size: 0.98em;
+  color: #888;
+}
+body.dark .stat-card {
+  background: #232b36;
+  box-shadow: 0 2px 12px #0004;
+}
+body.dark .stat-card .material-icons {
+  color: var(--accent-color);
+}
+body.dark .stat-number {
+  color: var(--main-color);
+}
+
+/* ========== تحسين الرسوم البيانية ========== */
+canvas {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 2px 12px #1976d222;
+  margin-bottom: 16px;
+  padding: 8px;
+  transition: background 0.2s;
+}
+body.dark canvas {
+  background: #232b36;
+  box-shadow: 0 2px 12px #0004;
+}
+
+/* ========== تحسين شريط الفلاتر ========== */
+.category-filters, .filters, .color-filter-bar, .priority-filter-bar, .tags-filter-bar {
+  background: #f5f7fa;
+  border-radius: 12px;
+  padding: 7px 10px;
+  margin-bottom: 14px;
+  box-shadow: 0 1px 4px #1976d111;
+  gap: 10px;
+}
+body.dark .category-filters, body.dark .filters, body.dark .color-filter-bar, body.dark .priority-filter-bar, body.dark .tags-filter-bar {
+  background: #232b36;
+  box-shadow: 0 1px 4px #0002;
+}
+
+/* استجابة التصميم */
+@media (max-width: 600px) {
+  .container { max-width: 100vw; padding: 0 2vw 32px 2vw; }
+  header#main-header { font-size: 0.95em; }
+  .fab-add-task { right: 16px; bottom: 16px; width: 54px; height: 54px; font-size: 1.7em; }
+} 
+
+body, body.dark {
+  transition: background 0.5s cubic-bezier(.4,0,.2,1), color 0.4s cubic-bezier(.4,0,.2,1), filter 0.35s;
+}
+body.theme-anim {
+  filter: blur(2px) brightness(1.08);
+  transition: filter 0.25s;
+} 
+
+/* ===== تحسين ترتيب وتباعد الأزرار الرئيسية ===== */
+.header-actions, .user-auth, .export-import-bar, .calendar-toggle-bar, .category-filters, .filters, .color-filter-bar, .priority-filter-bar, .tags-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.header-actions {
+  gap: 16px;
+  margin-right: 12px;
+}
+
+.user-auth button, .header-actions button, .export-import-bar button, .calendar-toggle-bar button, .category-filters button, .filters button, .tags-filter-bar button, .color-filter-bar button, .priority-filter-bar button {
+  margin: 0 2px;
+  min-width: 38px;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.export-import-bar {
+  justify-content: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.lang-switcher-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+#toggle-theme, #notif-bell, #toggle-dark-mode-btn {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+@media (max-width: 600px) {
+  .header-actions, .user-auth, .export-import-bar, .calendar-toggle-bar, .category-filters, .filters, .color-filter-bar, .priority-filter-bar, .tags-filter-bar {
+    gap: 7px;
+    margin-bottom: 8px;
+  }
+  .export-import-bar {
+    gap: 7px;
+    margin-bottom: 10px;
+  }
+  .lang-switcher-bar {
+    gap: 5px;
+    margin-bottom: 6px;
+  }
+} 

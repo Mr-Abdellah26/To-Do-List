@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TO DO List</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="/favicon-todo.svg">
+</head>
+<body>
+  <header id="main-header" style="background:#1976d2;color:#fff;box-shadow:0 2px 8px #0001;transition:all 0.2s;display:flex;align-items:center;justify-content:space-between;padding:18px 24px 12px 24px;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <img src="/favicon-todo.svg" alt="TO DO List Logo" style="width:44px;height:44px;vertical-align:middle;box-shadow:0 2px 8px #0002;border-radius:50%;background:#fff;">
+      <span id="project-title" style="font-size:1.7em;font-weight:bold;letter-spacing:1.5px;font-family:inherit;">TO DO List</span>
+    </div>
+    <div class="header-actions" style="display:flex;align-items:center;gap:14px;">
+      <div class="lang-switcher-bar">
+        <button id="lang-switcher-btn" class="export-btn">
+          <span id="lang-flag" style="font-size:1.3em;">🇦</span>
+          <span id="lang-switcher-label">العربية</span>
+          <span class="material-icons">language</span>
+        </button>
+        <div id="lang-switcher-menu" class="lang-switcher-menu" style="display:none;position:absolute;left:0;top:40px;background:#fff;border-radius:10px;box-shadow:0 2px 12px #0001;padding:6px 0;min-width:120px;">
+          <div class="lang-switcher-item" data-lang="ar" style="padding:7px 18px;cursor:pointer;">العربية 🇸🇦</div>
+          <div class="lang-switcher-item" data-lang="en" style="padding:7px 18px;cursor:pointer;">English 🇺🇸</div>
+        </div>
+      </div>
+      <button id="toggle-dark-mode-btn" title="تبديل الوضع الليلي/النهاري"><span class="material-icons" id="dark-mode-icon">dark_mode</span></button>
+      <button id="notif-bell" class="notif-bell" title="الإشعارات"><span class="material-icons">notifications</span><span id="notif-badge" class="notif-badge" style="display:none;">0</span></button>
+      <div class="user-auth">
+        <span id="user-name"></span>
+        <button id="login-email" title="تسجيل الدخول أو إنشاء حساب"><span class="material-icons">mail</span> تسجيل الدخول / إنشاء حساب</button>
+        <button id="logout" title="تسجيل الخروج" style="display:none;"><span class="material-icons">logout</span></button>
+      </div>
+    </div>
+  </header>
+  <div class="container">
+    <header style="display:none;"></header>
+    <div class="lang-switcher-bar" style="position:absolute;left:18px;top:18px;z-index:20;">
+      <button id="lang-switcher-btn" class="export-btn" style="padding:6px 18px;font-size:1em;display:flex;align-items:center;gap:7px;">
+        <span id="lang-flag" style="font-size:1.3em;">🇦</span>
+        <span id="lang-switcher-label">العربية</span>
+        <span class="material-icons">language</span>
+      </button>
+      <div id="lang-switcher-menu" class="lang-switcher-menu" style="display:none;position:absolute;left:0;top:40px;background:#fff;border-radius:10px;box-shadow:0 2px 12px #0001;padding:6px 0;min-width:120px;">
+        <div class="lang-switcher-item" data-lang="ar" style="padding:7px 18px;cursor:pointer;">العربية 🇸🇦</div>
+        <div class="lang-switcher-item" data-lang="en" style="padding:7px 18px;cursor:pointer;">English 🇺🇸</div>
+      </div>
+    </div>
+    <div class="search-bar">
+      <span class="material-icons">search</span>
+      <input type="text" id="task-search" placeholder="ابحث في المهام (العنوان، الفئة، التاريخ)..." autocomplete="off" />
+      <input type="date" id="search-date-from" title="من تاريخ" />
+      <input type="date" id="search-date-to" title="إلى تاريخ" />
+      <button id="clear-search" type="button" title="مسح البحث"><span class="material-icons">close</span> <span data-i18n="cancel">إلغاء</span></button>
+    </div>
+    <div class="color-filter-bar" id="color-filter-bar" style="display:flex;gap:8px;margin-bottom:10px;"></div>
+    <div class="priority-filter-bar" id="priority-filter-bar" style="display:flex;gap:8px;margin-bottom:10px;"></div>
+    <form id="task-form">
+      <input type="text" id="task-input" placeholder="أضف مهمة جديدة..." required data-i18n-placeholder="add_task" />
+      <select id="task-category" required>
+        <option value="">اختر الفئة</option>
+        <option value="عمل">عمل</option>
+        <option value="دراسة">دراسة</option>
+        <option value="تسوق">تسوق</option>
+        <option value="سفر">سفر</option>
+        <option value="صحة">صحة</option>
+        <option value="شخصية">شخصية</option>
+        <option value="أخرى">أخرى</option>
+      </select>
+      <div class="form-group">
+        <label for="calendar-type" data-i18n="language">نوع التقويم</label>
+        <select id="calendar-type" class="form-control" style="max-width:120px;">
+          <option value="gregorian">ميلادي</option>
+          <option value="hijri">هجري</option>
+        </select>
+      </div>
+      <div class="form-group" id="gregorian-date-group">
+        <label for="task-due-date" data-i18n="due_date">تاريخ ووقت المهمة</label>
+        <input type="datetime-local" id="task-due-date" name="dueDate" class="form-control" style="direction:ltr;max-width:220px;">
+        <small id="due-date-hint" style="display:block;color:#888;margin-top:2px;"></small>
+      </div>
+      <div class="form-group" id="hijri-date-group" style="display:none;">
+        <label for="task-due-date-hijri" data-i18n="due_date">تاريخ ووقت المهمة (هجري)</label>
+        <input type="text" id="task-due-date-hijri" class="form-control" style="direction:ltr;max-width:220px;" placeholder="اختر التاريخ الهجري" readonly>
+        <small id="due-date-hint-hijri" style="display:block;color:#888;margin-top:2px;"></small>
+      </div>
+      <div class="form-group">
+        <label for="task-color" data-i18n="color">لون المهمة</label>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <input type="color" id="task-color" name="color" value="#1976d2" style="width:36px;height:36px;border:none;cursor:pointer;">
+          <div id="color-suggestions" style="display:flex;gap:4px;"></div>
+        </div>
+      </div>
+      <button type="submit" title="إضافة مهمة"><span class="material-icons">add</span> <span data-i18n="add_task">إضافة مهمة</span></button>
+    </form>
+    <div class="category-filters">
+      <button data-category="all" class="active">الكل</button>
+      <button data-category="عمل">عمل</button>
+      <button data-category="دراسة">دراسة</button>
+      <button data-category="تسوق">تسوق</button>
+      <button data-category="سفر">سفر</button>
+      <button data-category="صحة">صحة</button>
+      <button data-category="شخصية">شخصية</button>
+      <button data-category="أخرى">أخرى</button>
+    </div>
+    <div class="filters">
+      <button data-filter="all" class="active">الكل</button>
+      <button data-filter="active">غير مكتملة</button>
+      <button data-filter="completed">مكتملة</button>
+    </div>
+    <div class="tags-filter-bar" id="tags-filter-bar"></div>
+    <div class="export-import-bar">
+      <button id="export-csv-btn" class="export-btn"><span class="material-icons">download</span> <span data-i18n="export">تصدير</span> CSV</button>
+      <button id="import-csv-btn" class="import-btn"><span class="material-icons">upload</span> <span data-i18n="import">استيراد</span> CSV</button>
+    </div>
+    <div class="calendar-toggle-bar" style="text-align:left;margin-bottom:8px;">
+      <button id="toggle-calendar-view" class="export-btn" style="padding:4px 14px;font-size:0.97em;">عرض التاريخ: ميلادي</button>
+    </div>
+    <ul id="task-list"></ul>
+  </div>
+  <div id="auth-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2>تسجيل الدخول / إنشاء حساب</h2>
+      <form id="auth-form">
+        <input type="email" id="auth-email" placeholder="البريد الإلكتروني" required />
+        <input type="password" id="auth-password" placeholder="كلمة المرور" required />
+        <button type="submit">دخول</button>
+        <div id="auth-error" class="auth-error"></div>
+      </form>
+      <button id="close-auth-modal" class="close-modal"><span class="material-icons">close</span></button>
+    </div>
+  </div>
+  <div id="welcome-banner" class="welcome-banner" style="display:none;">
+    <span id="welcome-text"></span>
+    <button id="close-welcome" class="close-welcome" title="إغلاق"><span class="material-icons">close</span></button>
+  </div>
+  <div class="dashboard">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+      <div class="stats-cards">
+        <div class="stat-card">
+          <span class="material-icons">list_alt</span>
+          <div>
+            <div id="stat-total" class="stat-number">0</div>
+            <div class="stat-label">إجمالي المهام</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <span class="material-icons">check_circle</span>
+          <div>
+            <div id="stat-done" class="stat-number">0</div>
+            <div class="stat-label">المهام المنجزة</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <span class="material-icons">pending_actions</span>
+          <div>
+            <div id="stat-left" class="stat-number">0</div>
+            <div class="stat-label">المهام المتبقية</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <span class="material-icons">star</span>
+          <div>
+            <div id="stat-bestday" class="stat-number">-</div>
+            <div class="stat-label">أفضل يوم إنتاجية</div>
+          </div>
+        </div>
+      </div>
+      <button id="share-all-btn" class="share-all-btn" title="مشاركة جميع المهام"><span class="material-icons">share</span> مشاركة القائمة</button>
+    </div>
+    <div class="stats-chart">
+      <canvas id="tasks-chart" height="120"></canvas>
+      <div style="margin-top:18px;">
+        <canvas id="category-pie" height="120"></canvas>
+      </div>
+    </div>
+  </div>
+  <div id="share-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2>مشاركة المهمة</h2>
+      <form id="share-form">
+        <input type="email" id="share-email" placeholder="البريد الإلكتروني للمستخدم" required />
+        <button type="submit">مشاركة</button>
+        <div id="share-error" class="auth-error"></div>
+      </form>
+      <div id="shared-users-list" class="shared-users-list"></div>
+      <button id="close-share-modal" class="close-modal"><span class="material-icons">close</span></button>
+    </div>
+  </div>
+  <button id="fab-add-task" class="fab-add-task" title="إضافة مهمة جديدة"><span class="material-icons">add</span></button>
+  <div id="add-task-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2>إضافة مهمة جديدة</h2>
+      <form id="add-task-form">
+        <input type="text" id="add-task-input" placeholder="عنوان المهمة" required />
+        <div class="input-helper">
+          <span id="add-task-charcount">0/60</span>
+          <span class="input-hint">اكتب عنوانًا واضحًا للمهمة</span>
+        </div>
+        <div id="auto-suggested-tag" style="margin:6px 0 0 0;color:#1976d2;font-size:0.97em;"></div>
+        <div id="add-task-suggestions" class="add-task-suggestions"></div>
+        <input type="text" id="add-task-tags" placeholder="أضف وسوم (مثال: urgent, مشروع, قراءة)" autocomplete="off" />
+        <div id="add-task-tags-list" class="tags-list"></div>
+        <select id="add-task-category" required>
+          <option value="">اختر الفئة</option>
+          <option value="عمل">عمل</option>
+          <option value="دراسة">دراسة</option>
+          <option value="تسوق">تسوق</option>
+          <option value="سفر">سفر</option>
+          <option value="صحة">صحة</option>
+          <option value="شخصية">شخصية</option>
+          <option value="أخرى">أخرى</option>
+        </select>
+        <div class="form-group">
+          <label for="calendar-type" data-i18n="language">نوع التقويم</label>
+          <select id="calendar-type" class="form-control" style="max-width:120px;">
+            <option value="gregorian">ميلادي</option>
+            <option value="hijri">هجري</option>
+          </select>
+        </div>
+        <div class="form-group" id="gregorian-date-group">
+          <label for="task-due-date" data-i18n="due_date">تاريخ ووقت المهمة</label>
+          <input type="datetime-local" id="task-due-date" name="dueDate" class="form-control" style="direction:ltr;max-width:220px;">
+          <small id="due-date-hint" style="display:block;color:#888;margin-top:2px;"></small>
+        </div>
+        <div class="form-group" id="hijri-date-group" style="display:none;">
+          <label for="task-due-date-hijri">تاريخ ووقت المهمة (هجري)</label>
+          <input type="text" id="task-due-date-hijri" class="form-control" style="direction:ltr;max-width:220px;" placeholder="اختر التاريخ الهجري" readonly>
+          <small id="due-date-hint-hijri" style="display:block;color:#888;margin-top:2px;"></small>
+        </div>
+        <div class="form-group">
+          <label for="task-color">لون المهمة</label>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <input type="color" id="task-color" name="color" value="#1976d2" style="width:36px;height:36px;border:none;cursor:pointer;">
+            <div id="color-suggestions" style="display:flex;gap:4px;"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="task-repeat">تكرار المهمة</label>
+          <select id="task-repeat" name="repeat" class="form-control" style="max-width:140px;">
+            <option value="none">لا يوجد</option>
+            <option value="daily">يوميًا</option>
+            <option value="weekly">أسبوعيًا</option>
+            <option value="monthly">شهريًا</option>
+            <option value="custom">مخصص...</option>
+          </select>
+        </div>
+        <button type="submit">إضافة</button>
+        <div id="add-task-error" class="auth-error"></div>
+      </form>
+      <button id="close-add-task-modal" class="close-modal"><span class="material-icons">close</span></button>
+    </div>
+  </div>
+  <div id="add-task-toast" class="add-task-toast" style="display:none;">تمت إضافة المهمة بنجاح!</div>
+  <div id="delete-modal" class="modal" style="display:none;">
+    <div class="modal-content" style="max-width:340px;text-align:center;">
+      <span class="material-icons" style="font-size:2.5rem;color:#e53935;margin-bottom:8px;">delete_forever</span>
+      <h2 style="margin:0 0 10px 0;">تأكيد حذف المهمة</h2>
+      <div id="delete-modal-title" style="color:#888;margin-bottom:18px;font-size:1.05rem;"></div>
+      <button id="confirm-delete-btn" class="delete-btn" style="margin:0 8px 0 0;">حذف</button>
+      <button id="cancel-delete-btn" style="background:#eee;color:#222;border:none;border-radius:12px;padding:8px 18px;cursor:pointer;">إلغاء</button>
+    </div>
+  </div>
+  <div id="export-modal" class="modal" style="display:none;">
+    <div class="modal-content" style="max-width:340px;text-align:center;">
+      <h2 style="margin:0 0 10px 0;">تصدير المهام</h2>
+      <div style="margin-bottom:10px;">
+        <label><input type="radio" name="export-type" value="csv" checked> CSV</label>
+        <label style="margin-right:18px;"><input type="radio" name="export-type" value="pdf"> PDF</label>
+        <label style="margin-right:18px;"><input type="radio" name="export-type" value="xlsx"> Excel</label>
+      </div>
+      <div style="margin-bottom:10px;">
+        <label><input type="radio" name="export-scope" value="all" checked> جميع المهام</label>
+        <label style="margin-right:18px;"><input type="radio" name="export-scope" value="filtered"> المعروضة فقط</label>
+      </div>
+      <button id="confirm-export-btn" style="background:#1976d2;color:#fff;border:none;border-radius:12px;padding:8px 18px;cursor:pointer;">تصدير</button>
+      <button id="cancel-export-btn" style="background:#eee;color:#222;border:none;border-radius:12px;padding:8px 18px;cursor:pointer;">إلغاء</button>
+    </div>
+  </div>
+  <div id="import-modal" class="modal" style="display:none;">
+    <div class="modal-content" style="max-width:420px;text-align:center;">
+      <h2 style="margin:0 0 10px 0;">استيراد مهام من ملف</h2>
+      <input type="file" id="import-file-input" accept=".csv, .xlsx, .xls" />
+      <div id="import-preview" style="margin:12px 0 8px 0;font-size:0.97rem;max-height:180px;overflow:auto;text-align:right;"></div>
+      <div id="import-merge-options" style="margin:10px 0 8px 0;display:none;">
+        <label><input type="radio" name="import-merge" value="all" checked> استيراد الكل (مع المكررة)</label><br>
+        <label><input type="radio" name="import-merge" value="new"> استيراد الجديدة فقط</label><br>
+        <label><input type="radio" name="import-merge" value="update"> تحديث المهام المكررة</label>
+      </div>
+      <button id="confirm-import-btn" style="background:#43a047;color:#fff;border:none;border-radius:12px;padding:8px 18px;cursor:pointer;">استيراد</button>
+      <button id="cancel-import-btn" style="background:#eee;color:#222;border:none;border-radius:12px;padding:8px 18px;cursor:pointer;">إلغاء</button>
+      <div id="import-error" class="auth-error"></div>
+    </div>
+  </div>
+  <div class="notif-inbox" id="notif-inbox" style="display:none;">
+    <div class="notif-inbox-header">
+      <span data-i18n="reminder">التذكيرات</span>
+      <button id="notif-inbox-close" title="إغلاق"><span class="material-icons">close</span></button>
+    </div>
+    <div class="notif-inbox-filter-bar" id="notif-inbox-filter-bar" style="display:flex;gap:7px;padding:7px 18px 0 18px;"></div>
+    <div id="notif-inbox-list" class="notif-inbox-list"></div>
+    <div class="notif-inbox-footer">
+      <button id="notif-mark-all" class="export-btn" style="padding:4px 14px;font-size:0.97em;" data-i18n="confirm">تعليم الكل كمقروء</button>
+      <button id="notif-clear-all" class="import-btn" style="padding:4px 14px;font-size:0.97em;" data-i18n="delete">حذف الكل</button>
+    </div>
+  </div>
+  <div id="task-details-modal" class="modal" style="display:none;">
+    <div class="modal-content" style="max-width:420px;">
+      <div id="task-details-header" style="display:flex;align-items:center;justify-content:space-between;">
+        <span id="task-details-title" style="font-size:1.15em;font-weight:bold;"></span>
+        <button id="task-details-close" style="background:none;border:none;font-size:1.3em;cursor:pointer;"><span class="material-icons">close</span></button>
+      </div>
+      <div id="task-details-meta" style="color:#888;font-size:0.97em;margin-bottom:8px;"></div>
+      <div id="attachments-section" style="margin:10px 0 14px 0;">
+        <div style="font-weight:bold;margin-bottom:6px;">المرفقات</div>
+        <input type="file" id="attachment-input" multiple style="margin-bottom:8px;">
+        <div id="attachments-list" style="display:flex;flex-wrap:wrap;gap:10px;"></div>
+      </div>
+      <div id="subtasks-section">
+        <div style="font-weight:bold;margin:10px 0 6px 0;">المهام الفرعية</div>
+        <ul id="subtasks-list" style="list-style:none;padding:0;margin:0 0 8px 0;"></ul>
+        <form id="add-subtask-form" style="display:flex;gap:6px;align-items:center;">
+          <input type="text" id="add-subtask-title" placeholder="عنوان المهمة الفرعية" required style="flex:1;">
+          <select id="add-subtask-priority" style="border-radius:8px;padding:3px 7px;">
+            <option value="normal">عادية</option>
+            <option value="high">عاجلة</option>
+            <option value="low">منخفضة</option>
+          </select>
+          <button type="submit" style="background:#1976d2;color:#fff;border:none;border-radius:8px;padding:6px 12px;">إضافة</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- زر ربط مع Google Calendar -->
+  <div id="calendar-integration" style="text-align:center;margin:16px 0;">
+    <button id="google-calendar-btn" style="background:#fff;color:#444;border:1px solid #ccc;padding:8px 20px;border-radius:24px;display:flex;align-items:center;gap:8px;cursor:pointer;font-size:16px;box-shadow:0 2px 8px #0001;">
+      <img src="https://www.gstatic.com/images/branding/product/1x/calendar_2020q4_48dp.png" alt="Google Calendar" style="width:24px;height:24px;vertical-align:middle;">
+      <span>ربط مع Google Calendar</span>
+    </button>
+  </div>
+  <!-- نهاية زر ربط مع Google Calendar -->
+  <!-- زر إحصائيات الإنتاجية -->
+  <button id="productivity-stats-btn" style="position:fixed;bottom:24px;left:24px;z-index:1000;background:#fff;color:#1976d2;border:1px solid #1976d2;padding:10px 22px;border-radius:24px;box-shadow:0 2px 8px #0001;cursor:pointer;font-size:16px;display:flex;align-items:center;gap:8px;">
+    <img src="https://www.gstatic.com/images/branding/product/1x/calendar_2020q4_48dp.png" alt="Google Calendar" style="width:24px;height:24px;vertical-align:middle;">
+    <span>ربط مع Google Calendar</span>
+  </button>
+  <!-- نافذة إحصائيات الإنتاجية -->
+  <div id="productivity-stats-modal" class="modal" style="display:none;z-index:2000;">
+    <div class="modal-content" style="max-width:420px;text-align:center;">
+      <h2 style="margin-bottom:12px;">إحصائيات الإنتاجية</h2>
+      <div id="productivity-stats-content" style="min-height:120px;"></div>
+      <div style="margin:18px 0 8px 0;"><canvas id="stats-bar-chart" width="340" height="180"></canvas></div>
+      <div style="margin:18px 0 8px 0;"><canvas id="stats-pie-chart" width="260" height="180"></canvas></div>
+      <div style="margin:18px 0 8px 0;"><canvas id="stats-line-chart" width="340" height="180"></canvas></div>
+      <div id="stats-smart-tip" style="color:#1976d2;font-size:1.05em;margin-bottom:8px;"></div>
+      <button id="close-productivity-stats" class="close-modal" style="margin-top:18px;"><span class="material-icons">close</span></button>
+    </div>
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html> 
